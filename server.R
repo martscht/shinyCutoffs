@@ -31,7 +31,7 @@ server <- function(input, output, session) {
   
   output$path <- renderPlot({
     tmp_fit <- try(lavaan::sem(input$model, do.fit = FALSE), silent = TRUE)
-    if (class(tmp_fit) != "try-error") semPlot::semPaths(tmp_fit)
+    if (class(tmp_fit) != "try-error") semPlot::semPaths(tmp_fit, "std")
   })
  
   observeEvent(input$run, {
