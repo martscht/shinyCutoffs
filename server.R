@@ -1,6 +1,8 @@
 #### Server Side of shinyCutoffs ----
 library(shiny)
 library(ezCutoffs)
+library(semPlot)
+library(lavaan)
 
 # Outsourced generation of lavaan examples
 source('generateExample.R')
@@ -26,6 +28,11 @@ server <- function(input, output, session) {
     }
   }
   )
+  
+  output$path <- renderPlot({
+    tmp_fit <- try(lavaan::sem(input$model, do.fit = FALSE), silent = TRUE)
+    if (class(tmp_fit) != "try-error") semPlot::semPaths(tmp_fit)
+  })
  
   observeEvent(input$run, {
     shinyjs::hide("summy")

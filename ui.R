@@ -15,9 +15,14 @@ ui <- fluidPage(
         tabPanel("Model",
           includeMarkdown("model_text.md"),
           fluidRow(
-            column(8,
+            column(6,
               textAreaInput("model", "Lavaan Input", cols = 80, rows = 15, resize = 'both'),
             ),
+            column(6,
+              imageOutput("path")
+            ),
+          ),
+          fluidRow(
             column(4,
               textOutput("var_names_head"),
               tableOutput("var_names")
