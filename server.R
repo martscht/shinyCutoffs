@@ -35,28 +35,41 @@ server <- function(input, output, session) {
   })
  
   observeEvent(input$run, {
-    shinyjs::hide("summy")
-    output$running <- renderText(paste("Running simulation with", input$n_rep, "replications."))
-    shinyjs::show("running")
-    normy <- ifelse(input$skew, "empirical", "assumed")
-    missy <- ifelse(input$missing, "missing", "complete")
-    res <- suppressMessages(ezCutoffs::ezCutoffs(
-      model = input$model,
-      data = dats,
-      n_obs = input$n_obs,
-      n_rep = input$n_rep,
-      fit_indices = input$fit_indices,
-      alpha_level = input$alpha_level,
-      normality = normy,
-      missing_data = missy,
-      bootstrapped_ci = FALSE,
-      n_boot = 1000,
-      boot_alpha = 0.05,
-      boot_internal = FALSE,
-      n_cores = input$n_cores))
-    output$summy <- renderTable(summary(res), rownames = TRUE)
-    shinyjs::hide("running")
-    shinyjs::show("summy")
+    # sanity check
+    sane <- TRUE
+    
+    if (is.null(dats)) {
+      if (input$n_obs <= 0) {
+        sane <- FALSE
+        output$sanity <- renderText(paste0("Please set a positive value for the number of observations or provide a dataset."))
+      }
+    }
+    
+    if (sane) {
+      shinyjs::hide("sanity")
+      shinyjs::hide("summy")
+      shinyjs::show("running")
+      output$running <- renderText(paste("Running simulation with", input$n_rep, "replications."))
+      normy <- ifelse(input$skew, "empirical", "assumed")
+      missy <- ifelse(input$missing, "missing", "complete")
+      res <- suppressMessages(ezCutoffs::ezCutoffs(
+        model = input$model,
+        data = dats,
+        n_obs = input$n_obs,
+        n_rep = input$n_rep,
+        fit_indices = input$fit_indices,
+        alpha_level = input$alpha_level,
+        normality = normy,
+        missing_data = missy,
+        bootstrapped_ci = FALSE,
+        n_boot = 1000,
+        boot_alpha = 0.05,
+        boot_internal = FALSE,
+        n_cores = input$n_cores))
+      output$summy <- renderTable(summary(res), rownames = TRUE)
+      shinyjs::hide("running")
+      shinyjs::show("summy")
+    }
   }
   )
    

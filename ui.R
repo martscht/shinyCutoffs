@@ -7,7 +7,10 @@ ui <- fluidPage(
   sidebarLayout(
     sidebarPanel(width = 2,
       actionButton("run", "Run Simulation"),
-      helpText("Running the simulation may take a few minutes. Make sure you have set all options you want to set.")
+      helpText("Running the simulation may take a few minutes. Make sure you have set all options you want to set."),
+      p(),
+      textOutput("sanity"),
+      textOutput("running")
     ),
     
     mainPanel(
@@ -88,7 +91,6 @@ ui <- fluidPage(
         ), 
         tabPanel("Output",
           shinyjs::useShinyjs(),
-          textOutput("running"),
           tableOutput("summy")
         )
       )
